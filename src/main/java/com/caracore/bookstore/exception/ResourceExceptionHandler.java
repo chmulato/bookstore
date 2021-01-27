@@ -11,9 +11,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ResourceExceptionHandler {
 
 	@ExceptionHandler(ObjectNotFoundException.class)
-	public ResponseEntity<StandandError> objectNotFound(ObjectNotFoundException e, HttpServletRequest request) {
+	public ResponseEntity<StandandError> objectNotFoundException(ObjectNotFoundException e, HttpServletRequest request) {
 		StandandError error = new StandandError(HttpStatus.NOT_FOUND.value(), System.currentTimeMillis() ,e.getMessage());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+	}
+
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<StandandError> dataIntegrityViolationException(DataIntegrityViolationException e, HttpServletRequest request) {
+		StandandError error = new StandandError(HttpStatus.BAD_REQUEST.value(), System.currentTimeMillis() ,e.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 	}
 	
 }
