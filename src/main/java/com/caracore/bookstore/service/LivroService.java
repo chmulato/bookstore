@@ -11,7 +11,6 @@ import com.caracore.bookstore.domain.Categoria;
 import com.caracore.bookstore.domain.Livro;
 import com.caracore.bookstore.dto.LivroDTO;
 import com.caracore.bookstore.exception.ObjectNotFoundException;
-import com.caracore.bookstore.repositories.CategoriaRepository;
 import com.caracore.bookstore.repositories.LivroRepository;
 
 @Service
@@ -21,7 +20,7 @@ public class LivroService {
 	private LivroRepository livroRepository;
 
 	@Autowired
-	private CategoriaRepository categoriaRepository;
+	private CategoriaService categoriaService;
 
 	public Livro findById(Integer id) {
 		Optional<Livro> obj = livroRepository.findById(id);
@@ -29,8 +28,9 @@ public class LivroService {
 				"Objeto não encontrado! Id: " + id + ", Tipo: " + Livro.class.getName()));
 	}
 
-	public List<Livro> findAll() {
-		return livroRepository.findAll();
+	public List<Livro> findAll(Integer id_cat) {
+		categoriaService.findById(id_cat);
+		return livroRepository.findAllByCategoria(id_cat);
 	}
 
 	public Livro create(Livro obj) {
@@ -44,8 +44,7 @@ public class LivroService {
 		obj.setNome_autor(objDto.getNome_autor());
 		obj.setTexto(objDto.getTexto());
 		if (objDto.getCategoriaId() != null) {
-			Optional<Categoria> objCategoria = categoriaRepository.findById(objDto.getCategoriaId());
-			Categoria categoria = objCategoria.orElse(null);
+			Categoria categoria = categoriaService.findById(objDto.getCategoriaId());
 			obj.setCategoria(categoria);
 		}
 		return livroRepository.save(obj);
@@ -59,5 +58,6 @@ public class LivroService {
 			throw new com.caracore.bookstore.exception.DataIntegrityViolationException("Objeto não pode ser deletado! Possui associação com outros objetos.");
 		}
 	}
+
 
 }
