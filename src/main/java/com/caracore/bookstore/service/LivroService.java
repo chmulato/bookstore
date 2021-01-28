@@ -37,7 +37,7 @@ public class LivroService {
 		obj.setId(null);
 		return livroRepository.save(obj);
 	}
-	
+
 	public Livro update(Integer id, LivroDTO objDto) {
 		Livro obj = findById(id);
 		obj.setTitulo(objDto.getTitulo());
@@ -55,9 +55,9 @@ public class LivroService {
 		try {
 			livroRepository.deleteById(id);
 		} catch (DataIntegrityViolationException e) {
-			throw new com.caracore.bookstore.exception.DataIntegrityViolationException("Objeto não pode ser deletado! Possui associação com outros objetos.");
+			throw new com.caracore.bookstore.exception.DataIntegrityViolationException(
+					"Objeto não pode ser deletado! Possui associação com outros objetos.");
 		}
 	}
-
 
 }
